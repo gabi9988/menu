@@ -6,8 +6,12 @@
   <title>Surpresa de Dia dos Namorados</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+    body {
       font-family: 'Poppins', sans-serif;
       background-color: #fff0f3;
       overflow: hidden;
@@ -16,17 +20,38 @@
       align-items: center;
       height: 100vh;
       flex-direction: column;
-      transition: background 1s ease;
-    }
-    h1, p, button {
       text-align: center;
-      color: #b3003c;
+      padding: 1rem;
     }
     h1 {
       font-family: 'Dancing Script', cursive;
       font-size: 2.5rem;
+      color: #b3003c;
+      margin-bottom: 1rem;
     }
-    .hidden { display: none; }
+    p {
+      color: #b3003c;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      background-color: #ff4d6d;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      margin: 10px auto;
+      display: block;
+      transition: transform 0.2s, background 0.3s;
+    }
+    button:hover {
+      background-color: #e6004c;
+      transform: scale(1.05);
+    }
+    .hidden {
+      display: none;
+    }
     .hearts, .confetti {
       position: fixed;
       width: 100%;
@@ -55,6 +80,10 @@
     }
     .heart::before { top: -10px; left: 0; }
     .heart::after { left: -10px; top: 0; }
+    @keyframes float {
+      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+    }
     .confetti-piece {
       width: 10px;
       height: 10px;
@@ -62,49 +91,25 @@
       opacity: 0.8;
       animation: confetti-fall 2.5s ease-out forwards;
     }
-    @keyframes float {
-      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
-      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
-    }
     @keyframes confetti-fall {
       0% { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
     }
-    button {
-      padding: 12px 24px;
-      font-size: 1rem;
-      background-color: #ff4d6d;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.3s;
-    }
-    button:hover {
-      background-color: #e6004c;
-      transform: scale(1.05);
-    }
-    .question {
-      max-width: 90%;
-      text-align: center;
-      font-size: 1.2rem;
-      animation: fadeIn 1s ease;
+    #content, #step {
+      max-width: 500px;
+      width: 100%;
     }
     .options button {
-      display: block;
-      margin: 10px auto;
+      width: 90%;
+      max-width: 300px;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #audioBtn {
+    ul {
+      list-style: none;
+      padding: 0;
       margin-top: 1rem;
     }
-    .te-amo-btn {
-      font-size: 1.5rem;
-      padding: 18px 36px;
-      animation: pulse 1.5s infinite;
-      margin-top: 20px;
+    li::before {
+      content: "✔️ ";
     }
     @keyframes pulse {
       0% { transform: scale(1); }
@@ -116,6 +121,7 @@
 <body>
   <div class="hearts" id="hearts"></div>
   <div class="confetti" id="confetti"></div>
+
   <h1 id="title">Clique aqui para começar</h1>
   <button id="startBtn">Começar</button>
   <button id="audioBtn" class="hidden">Tocar música 🎵</button>
@@ -156,43 +162,40 @@
     function renderStep() {
       const step = steps[stepIndex];
       stepDiv.innerHTML = `
-        <p class="question">${step.text}</p>
+        <p>${step.text}</p>
         <div class="options">
-          ${step.options.map(opt => `<button onclick="handleOptionClick(event)">${opt}</button>`).join('')}
+          ${step.options.map(opt => `<button onclick="handleOptionClick('${opt}')">${opt}</button>`).join('')}
         </div>
       `;
     }
 
-    function handleOptionClick(event) {
-      const choice = event.target.innerText;
-      selectedOptions.push(choice);
+    function handleOptionClick(option) {
+      selectedOptions.push(option);
       triggerConfetti();
       setTimeout(() => {
         stepIndex++;
         if (stepIndex < steps.length) {
           renderStep();
         } else {
-          showChecklist();
+          showFinalMessage();
         }
-      }, 1200);
-    }
-
-    function showChecklist() {
-      let checklistHTML = selectedOptions.map((opt, i) => `<li><strong>Etapa ${i + 1}:</strong> ${opt}</li>`).join('');
-      stepDiv.innerHTML = `
-        <p class="question">Anotado!</p>
-        <ul style="text-align: left; list-style: none; padding: 0; margin-top: 15px; font-size: 1rem; color: #b3003c;">
-          ${checklistHTML}
-        </ul>
-      `;
-      setTimeout(showFinalMessage, 3500);
+      }, 1000);
     }
 
     function showFinalMessage() {
-      stepDiv.innerHTML = `
-        <p class="question">Agora pode acender a vela e curtir a noite...</p>
-        <button class="te-amo-btn" onclick="window.open('https://tenor.com/pt-BR/view/old-man-gif-2502981170789291664')">Te amo!</button>
-      `;
+      stepDiv.innerHTML = `<p>Anotado!</p>`;
+      setTimeout(() => {
+        stepDiv.innerHTML = `
+          <p>Aqui está o que você escolheu:</p>
+          <ul>${selectedOptions.map(item => `<li>${item}</li>`).join('')}</ul>
+        `;
+        setTimeout(() => {
+          stepDiv.innerHTML = `
+            <p>Agora pode acender a vela e curtir a noite...</p>
+            <button style="font-size: 1.5rem; padding: 1rem 2rem; animation: pulse 1.5s infinite;" onclick="window.open('https://tenor.com/pt-BR/view/old-man-gif-2502981170789291664')">Te amo!</button>
+          `;
+        }, 3000);
+      }, 2000);
     }
 
     function triggerConfetti() {
@@ -219,11 +222,9 @@
       startBtn.classList.add('hidden');
       title.classList.add('hidden');
       content.classList.remove('hidden');
-
       audio.play().catch(() => {
         audioBtn.classList.remove('hidden');
       });
-
       renderStep();
       setInterval(createHeart, 400);
     });

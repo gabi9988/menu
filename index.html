@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surpresa de Dia dos Namorados</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #fff0f3;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      transition: background 1s ease;
+    }
+
+    h1, p, button {
+      text-align: center;
+      color: #b3003c;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.5rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .hearts {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .heart {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      background-color: red;
+      transform: rotate(45deg);
+      animation: float 5s infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(45deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      background-color: #ff4d6d;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #e6004c;
+    }
+
+    .question {
+      max-width: 90%;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+
+    .options button {
+      display: block;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <h1 id="title">Clique aqui para começar</h1>
+  <button id="startBtn">Começar</button>
+  <audio id="bgm" src="music.mp3" loop></audio>
+
+  <div id="content" class="hidden">
+    <div id="step"></div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const title = document.getElementById('title');
+    const content = document.getElementById('content');
+    const stepDiv = document.getElementById('step');
+    const audio = document.getElementById('bgm');
+
+    const steps = [
+      {
+        text: `Primeiro abra a caixa e localize os seus vales para suas próximas opções:<br><br>
+        Para começar, pega seu <strong>vale tim tim</strong>, e me diga, o que você deseja beber hoje?`,
+        options: [
+          '🍷 Vinho',
+          '🍺 Cerveja',
+          'Caipirinha/Gin'
+        ]
+      },
+      {
+        text: `Agora, pegue o seu <strong>VALE FOOD</strong> e marque qual a sua opção deliciosa pra hoje?`,
+        options: [
+          'Risoto de camarão',
+          'Nhoque ao molho de tomate e manjericão'
+        ]
+      },
+      {
+        text: `E por fim, com seu <strong>VALE SOBREMESA</strong>, você pode me dizer (além de mim), o que você prefere pra fechar a noite?`,
+        options: [
+          'Fondue de chocolate',
+          '🤫 Sobremesa surpresa'
+        ]
+      },
+      {
+        text: 'Anotado!',
+        options: []
+      },
+      {
+        text: 'Agora é só acender a vela que está na caixa e curtir o momento...<br><strong>Te amo! ❤️</strong>',
+        options: []
+      }
+    ];
+
+    let stepIndex = 0;
+
+    function renderStep() {
+      const step = steps[stepIndex];
+      stepDiv.innerHTML = `
+        <p class="question">${step.text}</p>
+        <div class="options">
+          ${step.options.map(opt => `<button onclick="nextStep()">${opt}</button>`).join('')}
+        </div>
+      `;
+    }
+
+    function nextStep() {
+      stepIndex++;
+      if (stepIndex < steps.length) {
+        renderStep();
+      }
+    }
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+      document.getElementById('hearts').appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+
+    startBtn.addEventListener('click', () => {
+      startBtn.classList.add('hidden');
+      title.classList.add('hidden');
+      content.classList.remove('hidden');
+      audio.play();
+      renderStep();
+      setInterval(createHeart, 300);
+    });
+  </script>
+</body>
+</html>

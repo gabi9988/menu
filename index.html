@@ -83,7 +83,11 @@
       transition: transform 0.2s, background 0.3s;
       display: block;
       margin: 1rem auto;
-      max-width: 250px;
+      max-width: 280px;
+      text-align: left;
+      position: relative;
+      padding-left: 40px;
+      box-sizing: border-box;
     }
     button:hover {
       background-color: #e6004c;
@@ -95,12 +99,34 @@
       font-size: 1.2rem;
       animation: fadeIn 1s ease;
     }
-    .options button {
-      margin: 10px auto;
+    .options {
+      max-width: 320px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .options button {
+      width: 100%;
+      text-align: left;
+    }
+    .checkmark {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid white;
+      background-color: transparent;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    button.selected .checkmark {
+      background-color: #fff;
+      border-color: #fff;
+      box-shadow: 0 0 8px 2px #fff;
     }
     #audioBtn {
       margin-top: 1rem;
@@ -123,6 +149,7 @@
       border: none;
       cursor: pointer;
       transition: background 0.3s;
+      text-align: center;
     }
     #finalBtn:hover {
       background-color: #e6004c;
@@ -164,34 +191,60 @@
     const steps = [
       {
         text: `Primeiro abra a caixa e localize os seus vales para suas próximas opções:<br><br>
-        Para começar, pega seu <strong>vale tim tim</strong>, e me diga, o que você deseja beber hoje?`,
+        Para começar, pega seu <strong>VALE TIM TIM</strong>, e me diga, o que você deseja beber hoje?`,
         options: ['🍷 Vinho', '🍺 Cerveja', 'Caipirinha/Gin']
       },
       {
         text: `Agora, pegue o seu <strong>VALE FOOD</strong> e marque qual a sua opção deliciosa pra hoje?`,
-        options: ['Risoto de camarão', 'Nhoque ao molho de tomate e manjericão']
+        options: ['🦐 Risoto de camarão', 'Nhoque ao molho de tomate e manjericão']
       },
       {
-        text: `E por fim, com seu <strong>VALE SOBREMESA</strong>, você pode me dizer (além de mim), o que você prefere pra fechar a noite?`,
+        text: `E por fim, com seu <strong>VALE SOBREMESA</strong>, o que você prefere pra fechar a noite (além de mim 😏)?`,
         options: ['Fondue de chocolate', '🤫 Sobremesa surpresa']
       }
     ];
 
     let stepIndex = 0;
     const chosenOptions = [];
+    let selectedBtn = null;
 
     function renderStep() {
       const step = steps[stepIndex];
       stepDiv.innerHTML = `
         <p class="question">${step.text}</p>
         <div class="options">
-          ${step.options.map(opt => `<button onclick="handleOptionClick('${opt}')">${opt}</button>`).join('')}
+          ${step.options.map(opt => `
+            <button onclick="handleOptionClick(this)">
+              <span class="checkmark"></span>
+              ${opt}
+            </button>
+          `).join('')}
         </div>
       `;
+      // reset selectedBtn for new step
+      selectedBtn = null;
     }
 
-    function handleOptionClick(option) {
-      chosenOptions.push(option);
+    function handleOptionClick(button) {
+      // Deseleciona botão anterior
+      if (selectedBtn) {
+        selectedBtn.classList.remove('selected');
+      }
+      // Seleciona botão atual
+      button.classList.add('selected');
+      selectedBtn = button;
+
+      // Pega texto da opção clicada sem o span
+      const optionText = button.textContent.trim();
+
+      // Guardar opção selecionada
+      chosenOptions[stepIndex] = optionText;
+
+      // Desativa os botões para evitar múltiplos cliques antes do próximo passo
+      const buttons = stepDiv.querySelectorAll('button');
+      buttons.forEach(btn => btn.disabled = true);
+
+      // Anima confetti e vai para próximo passo depois de 1.2s
       triggerConfetti();
       setTimeout(() => {
         stepIndex++;

@@ -6,6 +6,7 @@
   <title>Surpresa de Dia dos Namorados</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
   <style>
+    /* === SEU CSS AQUI === */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
@@ -18,21 +19,15 @@
       flex-direction: column;
       transition: background 1s ease;
     }
-
     h1, p, button {
       text-align: center;
       color: #b3003c;
     }
-
     h1 {
       font-family: 'Dancing Script', cursive;
       font-size: 2.5rem;
     }
-
-    .hidden {
-      display: none;
-    }
-
+    .hidden { display: none; }
     .hearts, .confetti {
       position: fixed;
       width: 100%;
@@ -40,20 +35,17 @@
       pointer-events: none;
       z-index: -1;
     }
-
     .heart, .confetti-piece {
       position: absolute;
       border-radius: 50%;
       animation: float 5s infinite;
     }
-
     .heart {
       width: 20px;
       height: 20px;
       background-color: red;
       transform: rotate(45deg);
     }
-
     .heart::before, .heart::after {
       content: '';
       width: 20px;
@@ -62,17 +54,8 @@
       position: absolute;
       border-radius: 50%;
     }
-
-    .heart::before {
-      top: -10px;
-      left: 0;
-    }
-
-    .heart::after {
-      left: -10px;
-      top: 0;
-    }
-
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: -10px; top: 0; }
     .confetti-piece {
       width: 10px;
       height: 10px;
@@ -80,17 +63,14 @@
       opacity: 0.8;
       animation: confetti-fall 1.5s ease-out forwards;
     }
-
     @keyframes float {
       0% { transform: translateY(0) rotate(45deg); opacity: 1; }
       100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
     }
-
     @keyframes confetti-fall {
       0% { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
     }
-
     button {
       padding: 12px 24px;
       font-size: 1rem;
@@ -100,27 +80,26 @@
       cursor: pointer;
       transition: transform 0.2s, background 0.3s;
     }
-
     button:hover {
       background-color: #e6004c;
       transform: scale(1.05);
     }
-
     .question {
       max-width: 90%;
       text-align: center;
       font-size: 1.2rem;
       animation: fadeIn 0.5s ease;
     }
-
     .options button {
       display: block;
       margin: 10px auto;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    #audioBtn {
+      margin-top: 1rem;
     }
   </style>
 </head>
@@ -129,6 +108,7 @@
   <div class="confetti" id="confetti"></div>
   <h1 id="title">Clique aqui para começar</h1>
   <button id="startBtn">Começar</button>
+  <button id="audioBtn" class="hidden">Tocar música 🎵</button>
   <audio id="bgm" src="music.mp3" loop></audio>
 
   <div id="content" class="hidden">
@@ -142,6 +122,7 @@
     const stepDiv = document.getElementById('step');
     const audio = document.getElementById('bgm');
     const confetti = document.getElementById('confetti');
+    const audioBtn = document.getElementById('audioBtn');
 
     const steps = [
       {
@@ -162,7 +143,7 @@
         options: []
       },
       {
-        text: 'Agora é só acender a vela que está na caixa e curtir o momento...<br><br><strong>Te amo! ❤️</strong><br><br><button onclick="window.open(\'https://tenor.com/pt-BR/view/old-man-gif-2502981170789291664\')">Te amo!</button>',
+        text: 'Agora é só acender a vela que está na caixa e curtir o momento...<br><br><strong>Te amo! ❤️</strong><br><br><button onclick="window.open(\\'https://tenor.com/pt-BR/view/old-man-gif-2502981170789291664\\')">Te amo!</button>',
         options: []
       }
     ];
@@ -210,16 +191,21 @@
     }
 
     startBtn.addEventListener('click', () => {
-      startBtn.style.display = 'none';
-      title.style.display = 'none';
+      startBtn.classList.add('hidden');
+      title.classList.add('hidden');
       content.classList.remove('hidden');
 
-      audio.play().catch(e => {
-        console.warn('Autoplay bloqueado:', e);
+      audio.play().catch(() => {
+        audioBtn.classList.remove('hidden');
       });
 
       renderStep();
       setInterval(createHeart, 300);
+    });
+
+    audioBtn.addEventListener('click', () => {
+      audio.play();
+      audioBtn.classList.add('hidden');
     });
   </script>
 </body>

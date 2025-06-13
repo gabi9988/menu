@@ -37,13 +37,13 @@
     .heart, .confetti-piece {
       position: absolute;
       border-radius: 50%;
-      animation: float 5s infinite;
     }
     .heart {
       width: 20px;
       height: 20px;
       background-color: red;
       transform: rotate(45deg);
+      animation: float 6s ease-in infinite;
     }
     .heart::before, .heart::after {
       content: '';
@@ -60,7 +60,7 @@
       height: 10px;
       background-color: #ff4d6d;
       opacity: 0.8;
-      animation: confetti-fall 1.5s ease-out forwards;
+      animation: confetti-fall 2.5s ease-out forwards;
     }
     @keyframes float {
       0% { transform: translateY(0) rotate(45deg); opacity: 1; }
@@ -87,7 +87,7 @@
       max-width: 90%;
       text-align: center;
       font-size: 1.2rem;
-      animation: fadeIn 0.5s ease;
+      animation: fadeIn 1s ease;
     }
     .options button {
       display: block;
@@ -135,16 +135,7 @@
       },
       {
         text: `E por fim, com seu <strong>VALE SOBREMESA</strong>, você pode me dizer (além de mim), o que você prefere pra fechar a noite?`,
-        options: ['Fondue de chocolate', '🤫 Sobremesa surpresa']
-      },
-      {
-        text: 'Anotado!',
-        options: []
-      },
-      {
-        text: `Agora é só acender a vela que está na caixa e curtir o momento...<br><br><strong>Te amo! ❤️</strong><br><br>
-        <button onclick="window.open('https://tenor.com/pt-BR/view/old-man-gif-2502981170789291664')">Te amo!</button>`,
-        options: []
+        options: ['Fondue de chocolate', '😫 Sobremesa surpresa']
       }
     ];
 
@@ -166,18 +157,30 @@
         stepIndex++;
         if (stepIndex < steps.length) {
           renderStep();
+        } else {
+          showFinalMessage();
         }
-      }, 600);
+      }, 1200);
+    }
+
+    function showFinalMessage() {
+      stepDiv.innerHTML = `<p class="question">Anotado!</p>`;
+      setTimeout(() => {
+        stepDiv.innerHTML = `
+          <p class="question">Agora é só acender a vela que está na caixa e curtir o momento...<br><br><strong>Te amo! ❤️</strong></p>
+          <button onclick="window.open('https://tenor.com/pt-BR/view/old-man-gif-2502981170789291664')">Te amo!</button>
+        `;
+      }, 2000);
     }
 
     function triggerConfetti() {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 40; i++) {
         const piece = document.createElement('div');
         piece.className = 'confetti-piece';
         piece.style.left = Math.random() * 100 + 'vw';
         piece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
         confetti.appendChild(piece);
-        setTimeout(() => piece.remove(), 1500);
+        setTimeout(() => piece.remove(), 2500);
       }
     }
 
@@ -185,9 +188,9 @@
       const heart = document.createElement('div');
       heart.className = 'heart';
       heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+      heart.style.animationDuration = (Math.random() * 2 + 4) + 's';
       document.getElementById('hearts').appendChild(heart);
-      setTimeout(() => heart.remove(), 5000);
+      setTimeout(() => heart.remove(), 6000);
     }
 
     startBtn.addEventListener('click', () => {
@@ -200,7 +203,7 @@
       });
 
       renderStep();
-      setInterval(createHeart, 300);
+      setInterval(createHeart, 400);
     });
 
     audioBtn.addEventListener('click', () => {

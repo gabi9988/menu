@@ -1,3 +1,4 @@
+<!-- Substitua todo o seu HTML por esse -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -100,6 +101,24 @@
     #audioBtn {
       margin-top: 1rem;
     }
+
+    /* Botão "Te amo" final */
+    .te-amo-btn {
+      font-size: 1.6rem;
+      padding: 20px 40px;
+      border: none;
+      border-radius: 25px;
+      background-color: #ff0055;
+      color: white;
+      cursor: pointer;
+      animation: pulse 1.5s infinite;
+      margin-top: 30px;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -135,7 +154,7 @@
       },
       {
         text: `E por fim, com seu <strong>VALE SOBREMESA</strong>, você pode me dizer (além de mim), o que você prefere pra fechar a noite?`,
-        options: ['Fondue de chocolate', '😫 Sobremesa surpresa']
+        options: ['Fondue de chocolate', '🤫 Sobremesa surpresa']
       }
     ];
 
@@ -167,8 +186,9 @@
       stepDiv.innerHTML = `<p class="question">Anotado!</p>`;
       setTimeout(() => {
         stepDiv.innerHTML = `
-          <p class="question">Agora é só acender a vela que está na caixa e curtir o momento...<br><br><strong>Te amo! ❤️</strong></p>
-          <button onclick="window.open('https://tenor.com/pt-BR/view/old-man-gif-2502981170789291664')">Te amo!</button>
+          <button class="te-amo-btn" onclick="window.open('https://tenor.com/pt-BR/view/old-man-gif-2502981170789291664')">
+            Te amo!
+          </button>
         `;
       }, 2000);
     }
